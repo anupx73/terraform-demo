@@ -16,4 +16,6 @@ This script will provision the following on aws public cloud.
 ## host machine setup
 `yum install -y terraform mysql`  
 
-**Note: terraform.tfvar should have proper aws accesskey and db password**
+## notes  
+  - terraform.tfvar should have proper aws accesskey and db password
+  - add the db connection name to app/userdata.sh from the output of db provisioning
