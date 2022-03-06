@@ -7,10 +7,10 @@ variable "REGION" {
 
 # security group
 variable "SG_EC2_NAME" {
-  default   = "tud-ca1-sg"
+  default   = "tud-ca1-ec2-sg"
 }
 variable "SG_LB_NAME" {
-  default   = "tud-ca1-sg"
+  default   = "tud-ca1-lb-sg"
 }
 variable "SG_PROTO" {
   type      = map(string)

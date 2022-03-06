@@ -38,6 +38,12 @@ resource "aws_security_group" "sg_lb" {
     from_port                       = var.SG_PORTS["HTTP"]
     to_port                         = var.SG_PORTS["HTTP"]
   }
+  egress {
+    protocol                        = var.SG_PROTO["ANY"]
+    cidr_blocks                     = [var.SG_CIDR]
+    from_port                       = var.SG_PORTS["ANY"]
+    to_port                         = var.SG_PORTS["ANY"]
+  }
 }
 
 # define ec2 instance config
