@@ -99,6 +99,12 @@ variable "INS_TYPE" {
 variable "INS_GET_PUB_IP" {
   default     = true
 }
+variable "LAUNCH_TEMPLATE_VER" {
+  default = "$Latest"
+}
+variable "EC2_LT_NAME" {
+  default = "tud-ca1-ec2-lt"
+}
 
 # misc
 variable "TAGS" {

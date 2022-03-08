@@ -1,11 +1,9 @@
 # ITInfra CA1 by x00193210 (Anupam Saha)
 # This script will provision the following on aws public cloud:
 #   - security group
-#   - ec2 launch config
+#   - ec2 launch template
 #   - application load balancer
 #   - auto scaling group with app health checker
-#   - [pending] s3 bucket to store user data uploaded from app
-#   - [pending] create waf and waf rules to secure app
 
 # define security groups
 resource "aws_security_group" "sg_ec2" {
@@ -46,14 +44,14 @@ resource "aws_security_group" "sg_lb" {
   }
 }
 
-# define ec2 instance config
-resource "aws_launch_configuration" "this" {
+# define ec2 launch template
+resource "aws_launch_template" "this" {
+  name                              = var.EC2_LT_NAME
   image_id                          = lookup(var.INS_AMI, var.REGION)
   instance_type                     = var.INS_TYPE
   key_name                          = var.KEY_NAME
-  security_groups                   = [aws_security_group.sg_ec2.id]
-  associate_public_ip_address       = var.INS_GET_PUB_IP
-  user_data                         = "${file("userdata.sh")}"
+  security_group_names              = [aws_security_group.sg_ec2.name]
+  user_data                         = filebase64("userdata.sh")
 }
 
 # define application load balancer
@@ -98,10 +96,13 @@ resource "aws_autoscaling_group" "this" {
   desired_capacity                  = var.ASG_CAPACITY
   min_size                          = var.ASG_CAPACITY
   max_size                          = var.ASG_CAPACITY + 2
-  launch_configuration              = aws_launch_configuration.this.name
   health_check_grace_period         = var.ASG_HC_GRACE_TIME
   health_check_type                 = var.ASG_HC_TYPE
   target_group_arns                 = [aws_lb_target_group.this.arn]
+  launch_template {
+    id                              = aws_launch_template.this.id
+    version                         = var.LAUNCH_TEMPLATE_VER
+  }
   tag {
     key                             = var.ASG_TAG_KEY
     value                           = var.ASG_TAG_VALUE
